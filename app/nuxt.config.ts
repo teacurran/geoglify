@@ -34,7 +34,7 @@ export default defineNuxtConfig({
       },
     ],
     auth: {
-      baseURL: "https://geoglify.com/php/api/auth",
+      baseURL: "http://localhost:8082/auth",
       provider: {
         type: "local",
         endpoints: {

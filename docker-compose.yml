@@ -9,7 +9,17 @@ services:
     working_dir: /opt/app
     ports:
       - "3100:3000"
-      
+    environment:
+      API_URL: http://localhost:8082
+      TILESERVER_URL: http://localhost:3001
+      EXP_API_URL: http://localhost:8082
+      REALTIME_URL: http://localhost:8082
+      NODE_ENV: development
+    volumes:
+      - ./app:/opt/app
+    entrypoint: []
+    command: "npm run dev"
+
   # mongodb:
   #   container_name: mongodb
   #   restart: always
@@ -39,8 +49,9 @@ services:
     container_name: ais-stream
     working_dir: /opt/ais-stream
     environment:
-      - NODE_ENV=production
-      - MONGODB_CONNECTION_STRING=mongodb+srv://geoglify:Fp0p5DWwjUYtdYPB@cluster0.2n7eqof.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      - NODE_ENV=development
+      # - MONGODB_CONNECTION_STRING=mongodb+srv://geoglify:Fp0p5DWwjUYtdYPB@cluster0.2n7eqof.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      - MONGODB_CONNECTION_STRING=mongodb://root:root@mongodb:27017/?directConnection=true
       - AISSTREAM_API_KEY=7fb1e16f93a4d520d83a95e325c55e69b3b4fc0b
       - AIS_SERVER_HOST=aisstream.io
     command: "node main.js"
@@ -65,8 +76,9 @@ services:
     container_name: realtime
     working_dir: /opt/realtime
     environment:
-      - NODE_ENV=production
-      - MONGODB_CONNECTION_STRING=mongodb+srv://geoglify:Fp0p5DWwjUYtdYPB@cluster0.2n7eqof.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      - NODE_ENV=development
+      # - MONGODB_CONNECTION_STRING=mongodb+srv://geoglify:Fp0p5DWwjUYtdYPB@cluster0.2n7eqof.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      - MONGODB_CONNECTION_STRING=mongodb://root:root@mongodb:27017/?directConnection=true
     ports:
       - "8080:8080"
     command: "node main.js"

@@ -10,6 +10,8 @@ const { logError, logInfo, logSuccess, logWarning } = require("./logger");
 // Configurations
 const MONGODB_CONNECTION_STRING = process.env.MONGODB_CONNECTION_STRING || "mongodb://root:root@localhost:27778/?directConnection=true&authMechanism=DEFAULT";
 
+console.info("Connecting to MongoDB:", MONGODB_CONNECTION_STRING);
+
 // MongoDB client
 const mongoClient = new MongoClient(MONGODB_CONNECTION_STRING);
 
