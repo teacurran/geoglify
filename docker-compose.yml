@@ -8,20 +8,30 @@ services:
     build: ./app
     working_dir: /opt/app
     ports:
-      - "3000:3000"
+      - "3100:3000"
       
+  # mongodb:
+  #   container_name: mongodb
+  #   restart: always
+  #   image: mongodb/atlas
+  #   privileged: true
+  #   command: |
+  #     /bin/bash -c "atlas deployments setup --type local --port 27778 --bindIpAll --username root --password root --force && tail -f /dev/null"
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - mongodb_data:/var/lib/containers
+  #   ports:
+  #     - 27778:27778
+
   mongodb:
-    container_name: mongodb
-    restart: always
-    image: mongodb/atlas
-    privileged: true
-    command: |
-      /bin/bash -c "atlas deployments setup --type local --port 27778 --bindIpAll --username root --password root --force && tail -f /dev/null"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - mongodb_data:/var/lib/containers
+    image: mongodb/mongodb-atlas-local
+    environment:
+      - MONGODB_INITDB_ROOT_USERNAME=root
+      - MONGODB_INITDB_ROOT_PASSWORD=root
     ports:
-      - 27778:27778
+      - 27778:27017
+    volumes:
+      - mongodb_data:/data/db
 
   ais-stream:
     build: ./ais-stream
