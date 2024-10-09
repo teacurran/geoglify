@@ -5,7 +5,7 @@ const { ObjectId } = require("mongodb");
 // MongoDB Connection String
 const MONGODB_CONNECTION_STRING = process.env.MONGODB_CONNECTION_STRING || "mongodb://root:root@localhost:27778/?directConnection=true&authMechanism=DEFAULT";
 
-console.info("Connecting to MongoDB:", MONGODB_CONNECTION_STRING);
+console.info("Connecting to MongoDBX:", MONGODB_CONNECTION_STRING);
 
 const mongoClient = new MongoClient(MONGODB_CONNECTION_STRING);
 

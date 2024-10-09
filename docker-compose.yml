@@ -10,10 +10,10 @@ services:
     ports:
       - "3100:3000"
     environment:
-      API_URL: http://localhost:8082
+      API_URL: http://localhost:8082/api
       TILESERVER_URL: http://localhost:3001
-      EXP_API_URL: http://localhost:8082
-      REALTIME_URL: http://localhost:8082
+      EXP_API_URL: http://localhost:8080
+      REALTIME_URL: http://localhost:8080
       NODE_ENV: development
     volumes:
       - ./app:/opt/app
@@ -34,14 +34,26 @@ services:
   #     - 27778:27778
 
   mongodb:
-    image: mongodb/mongodb-atlas-local
+    image: mongo:latest
+    restart: always
     environment:
-      - MONGODB_INITDB_ROOT_USERNAME=root
-      - MONGODB_INITDB_ROOT_PASSWORD=root
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: geoglify
     ports:
       - 27778:27017
     volumes:
       - mongodb_data:/data/db
+      - ./mongodb.key.dev:/data/replica.key.devel
+    entrypoint:
+            - bash
+            - -c
+            - |
+                cp /data/replica.key.devel /data/replica.key
+                chmod 400 /data/replica.key
+                chown 999:999 /data/replica.key
+                exec docker-entrypoint.sh $$@     
+    command: "mongod --bind_ip_all --auth --replSet replicaSet01 --keyFile /data/replica.key"
 
   ais-stream:
     build: ./ais-stream
@@ -51,7 +63,7 @@ services:
     environment:
       - NODE_ENV=development
       # - MONGODB_CONNECTION_STRING=mongodb+srv://geoglify:Fp0p5DWwjUYtdYPB@cluster0.2n7eqof.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
-      - MONGODB_CONNECTION_STRING=mongodb://root:root@mongodb:27017/?directConnection=true
+      - MONGODB_CONNECTION_STRING=mongodb://root:root@mongodb:27017/?directConnection=true&authMechanism=DEFAULT&replicaSet=replicaSet01
       - AISSTREAM_API_KEY=7fb1e16f93a4d520d83a95e325c55e69b3b4fc0b
       - AIS_SERVER_HOST=aisstream.io
     command: "node main.js"
@@ -78,10 +90,12 @@ services:
     environment:
       - NODE_ENV=development
       # - MONGODB_CONNECTION_STRING=mongodb+srv://geoglify:Fp0p5DWwjUYtdYPB@cluster0.2n7eqof.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
-      - MONGODB_CONNECTION_STRING=mongodb://root:root@mongodb:27017/?directConnection=true
+      - MONGODB_CONNECTION_STRING=mongodb://root:root@mongodb:27017/?directConnection=true&authMechanism=DEFAULT
     ports:
       - "8080:8080"
     command: "node main.js"
+    volumes:
+      - ./realtime:/opt/realtime
 
   api:
     build: ./api

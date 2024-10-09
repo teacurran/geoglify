@@ -89,7 +89,7 @@ app.use(function customErrorHandler(err, req, res, next) {
 async function connectToMongoDBWithRetry() {
   try {
     logWarning("Connecting to MongoDB...");
-    await mongoClient.connect();
+    await mongoClient.connect(MONGODB_CONNECTION_STRING);
     logSuccess("MongoDB Connected");
     startApplication();
   } catch (err) {
